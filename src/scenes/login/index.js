@@ -4,7 +4,7 @@ import { tokens } from "../../theme";
 import axios from "../../api/axios";
 import { EnumsFactory } from "../../data/utilsAtLarge";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useAuth from "../../hooks/useAuth";
 import { useEffect } from "react";
 
@@ -23,7 +23,13 @@ const LoginScreen = () => {
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
+
+  useEffect(()=>{
+    if (auth?.accessToken){
+        navigate("/", { replace: true });
+    }
+  },[])
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -77,7 +83,7 @@ const LoginScreen = () => {
       alignItems="center"
       justifyContent="center"
       minHeight="100vh"
-      backgroundColor={colors.primary[500]}
+      backgroundColor={colors.primary[400]}
     >
       <Typography
         variant="h4"
@@ -101,11 +107,11 @@ const LoginScreen = () => {
         </Typography>
       )}
       <Box
-        width={300}
+        width={500}
         p={3}
         borderRadius={4}
         boxShadow={3}
-        bgcolor={colors.primary[600]}
+        bgcolor={colors.primary[500]}
       >
         <TextField
           label="Username"
@@ -155,6 +161,12 @@ const LoginScreen = () => {
         >
           Login
         </Button>
+        <Typography variant="h4" mt={2}>
+          Don't have an account?{" "}<br/>
+          <Link component={Link} to="/register" color="white">
+            Register here
+          </Link>
+        </Typography>
       </Box>
     </Box>
   );
