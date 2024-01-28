@@ -1,10 +1,11 @@
 import { useEffect } from "react";
-import { useLocation, Navigate, Outlet } from "react-router-dom";
+import { useLocation, Navigate, Outlet, useNavigate } from "react-router-dom";
 import useAuth from "../hooks/useAuth";
 
 const RequireAuth = ({ allowedRoles }) => {
     const { auth, setAuth } = useAuth();
     const location = useLocation();
+    const navigate = useNavigate();
 
     useEffect(() => {
         // Check if token has expired and redirect to login if needed
@@ -13,6 +14,7 @@ const RequireAuth = ({ allowedRoles }) => {
           const tokenExpiration = new Date(auth?.expiration);
           if (tokenExpiration < new Date()) {
             setAuth({}); // Clear authentication data
+            navigate("/tokenExpiry", { replace: true });
           }
         }
         console.log("In RequireAuth "+ auth?.accessToken)

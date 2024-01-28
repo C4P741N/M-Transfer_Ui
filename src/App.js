@@ -12,6 +12,7 @@ import LoginScreen from "./scenes/login";
 import RegistrationForm from "./scenes/register";
 import RequireAuth from "./components/RequireAuth";
 import useAuth from "./hooks/useAuth";
+import TokenExpiredPage from "./scenes/tokenExpiry/TokenExpiry";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -58,6 +59,7 @@ function App() {
             <Routes>
               <Route path="/login" element={<LoginScreen />} />
               <Route path="/register" element={<RegistrationForm />} />
+              <Route path="tokenExpiry" element={<TokenExpiredPage />}/>
 
               <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                 <Route path="/" element={<Dashboard />} />
