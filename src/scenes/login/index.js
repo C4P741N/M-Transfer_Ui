@@ -38,7 +38,7 @@ const LoginScreen = () => {
       const response = await axios.post(
         LOGIN_URL,
         JSON.stringify({
-          user: username,
+          email: username,
           pwd: password,
           authType: EnumsFactory.EnumsAtLarge.AuthTypes.Authentication,
         }),
@@ -62,7 +62,7 @@ const LoginScreen = () => {
       } else if (err.response?.status === 401) {
         setErrMsg("Unauthorized");
       } else {
-        setErrMsg("Login Failed");
+        setErrMsg("Invalid Username or Password");
       }
       errRef.current.focus();
     }
@@ -114,7 +114,7 @@ const LoginScreen = () => {
         bgcolor={colors.primary[500]}
       >
         <TextField
-          label="Username"
+          label="Email"
           variant="outlined"
           fullWidth
           margin="normal"

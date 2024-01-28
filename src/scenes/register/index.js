@@ -48,6 +48,7 @@ const RegistrationForm = () => {
         JSON.stringify({
           user: username,
           pwd: password,
+          email: email,
           authType: EnumsFactory.EnumsAtLarge.AuthTypes.Registration,
         }),
         {

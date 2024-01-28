@@ -9,6 +9,9 @@ import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import ReceiptOutlinedIcon from "@mui/icons-material/ReceiptOutlined";
 import MenuOutlinedIcon from "@mui/icons-material/MenuOutlined";
 import AttachMoneyOutlined from "@mui/icons-material/Balance";
+import { useEffect } from "react";
+import { parseJwt } from "../../components/DecryptToken";
+import useAuth from "../../hooks/useAuth";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -33,6 +36,32 @@ const Sidebar = () => {
   const colors = tokens(theme.palette.mode);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+
+  const { auth } = useAuth();
+
+  const [userName, setUserName] = useState("User");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = auth?.accessToken;
+
+      const userObj = parseJwt(token);
+
+      console.log('Token values are '+ JSON.stringify(userObj))
+
+      const userId = userObj?.userName;
+
+      setUserName(userId);
+
+    //   const { URL, AUTH_TYPE } = transactionTypeMap["balance"] || {};
+
+    //   if (URL && AUTH_TYPE) {
+    //     await dataParser(URL, AUTH_TYPE, userId);
+    //   }
+    };
+
+    fetchData();
+  }, []); // empty dependency array
 
   return (
     <Box
@@ -91,7 +120,7 @@ const Sidebar = () => {
                   fontWeight="bold"
                   sx={{ m: "10px 0 0 0" }}
                 >
-                  Hi, Ed Roh
+                  Hi, {userName}
                 </Typography>
               </Box>
             </Box>

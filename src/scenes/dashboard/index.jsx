@@ -2,10 +2,15 @@ import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
 import { tokens } from "../../theme";
 import { mockTransactions } from "../../data/mockData";
 import Header from "../../components/Header";
+import useAuth from "../../hooks/useAuth";
+
+
 
 const Dashboard = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
+
+
 
   return (
     <Box m="50px" p="0 100px">
