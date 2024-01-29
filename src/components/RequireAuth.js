@@ -10,14 +10,14 @@ const RequireAuth = ({ allowedRoles }) => {
     useEffect(() => {
         // Check if token has expired and redirect to login if needed
         if (auth?.accessToken) {
-          console.log("RequireAuth "+ auth?.expiration)
+          // console.log("RequireAuth "+ auth?.expiration)
           const tokenExpiration = new Date(auth?.expiration);
           if (tokenExpiration < new Date()) {
             setAuth({}); // Clear authentication data
             navigate("/tokenExpiry", { replace: true });
           }
         }
-        console.log("In RequireAuth "+ auth?.accessToken)
+        // console.log("In RequireAuth "+ auth?.accessToken)
       }, [auth, setAuth]);
 
     return (

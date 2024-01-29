@@ -2,10 +2,10 @@ import { Box, Button, TextField } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import Header from "../../components/Header";
+import Header from "../components/Header";
 import { useEffect, useRef, useState } from "react";
-import Dropdown from "../../components/Dropdown";
-import { transactionTypes } from "../../data/utilsAtLarge";
+import Dropdown from "../components/Dropdown";
+import { transactionTypes } from "../data/utilsAtLarge";
 
 const Transact = () => {
   const userRef = useRef();

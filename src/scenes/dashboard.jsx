@@ -1,16 +1,76 @@
 import { Box, Button, IconButton, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import { mockTransactions } from "../../data/mockData";
-import Header from "../../components/Header";
-import useAuth from "../../hooks/useAuth";
-
+import { tokens } from "../theme";
+import { mockTransactions } from "../data/mockData";
+import Header from "../components/Header";
+import useAuth from "../hooks/useAuth";
+import { useEffect, useState } from "react";
+import { transactionTypeMap } from "../data/utilsAtLarge";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
 
 
 const Dashboard = () => {
+  const { auth } = useAuth();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
+  const [balance, setBalance] = useState("0.00")
+  const [amountSent, setAmountSent] = useState("0.00")
+  const [amountReceived, setAmountReceived] = useState("0.00")
 
+  const axiosPrivate = useAxiosPrivate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const userId = auth?.userId;
+
+      const { URL, AUTH_TYPE } = transactionTypeMap["dashboard"] || {};
+
+      if (URL && AUTH_TYPE) {
+        await dataParser(URL, AUTH_TYPE, userId);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const dataParser = async (URL, AUTH_TYPE, userId) => {
+    const controller = new AbortController();
+
+    console.log(`${userId}  path is ${URL}, ${AUTH_TYPE}`);
+    try {
+      const response = await axiosPrivate.post(
+        URL,
+        JSON.stringify({
+          userId: userId,
+          amount: 0,
+          trasactionType: AUTH_TYPE,
+        }),
+        {
+          signal: controller.signal,
+        }
+      );
+
+      console.log("Dashboard response is " + JSON.stringify(response.data));
+
+      const bal = response?.data?.balance;
+      const sent = response?.data?.amountSent;
+      const received = response?.data?.amountReceived;
+
+      setBalance(bal);
+      setAmountSent(sent);
+      setAmountReceived(received);
+      // setTransaction("select");
+      // setAmount("");
+      // setTransferUser("");
+      // if(AUTH_TYPE != transactionTypeMap['balance'].AUTH_TYPE) setSuccMsg("Success");
+    } catch (err) {
+      console.error("Dashboard error is " + JSON.parse(err?.response));
+
+      // setErrMsg(err?.data);
+  
+      // errRef.current.focus();
+    }
+  };
 
   return (
     <Box m="50px" p="0 100px">
@@ -41,7 +101,7 @@ const Dashboard = () => {
             fontWeight="bold"
             color={colors.greenAccent[500]}
           >
-            $59,342.32
+            Ksh {balance}
           </Typography>
         </Box>
         <Box
@@ -58,7 +118,7 @@ const Dashboard = () => {
             fontWeight="bold"
             color={colors.greenAccent[500]}
           >
-            $59,342.32
+            Ksh {amountSent}
           </Typography>
         </Box>
         <Box
@@ -75,7 +135,7 @@ const Dashboard = () => {
             fontWeight="bold"
             color={colors.greenAccent[500]}
           >
-            $59,342.32
+            Ksh {amountReceived}
           </Typography>
         </Box>
 

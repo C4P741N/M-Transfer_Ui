@@ -12,7 +12,7 @@ import LoginScreen from "./scenes/login";
 import RegistrationForm from "./scenes/register";
 import RequireAuth from "./components/RequireAuth";
 import useAuth from "./hooks/useAuth";
-import TokenExpiredPage from "./scenes/tokenExpiry/TokenExpiry";
+import TokenExpiredPage from "./scenes/tokenExpiry";
 
 function App() {
   const [theme, colorMode] = useMode();

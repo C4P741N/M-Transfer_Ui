@@ -10,7 +10,7 @@ export const EnumsFactory = {
       None: 0,
       Withdraw: 1,
       Deposit: 2,
-      GetBalance: 3,
+      GetDashboardValues: 3,
       CreditTransfer: 4,
     },
   },
@@ -24,7 +24,7 @@ export const transactionTypes = [
   // { label: "Check Balance", value: "balance" },
 ];
 
-export const transactionTypeDetails = {
+export const transactionTypeMap = {
   deposit: {
     URL: "transactions/deposit",
     AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.Deposit,
@@ -37,8 +37,8 @@ export const transactionTypeDetails = {
     URL: "transactions/credit-transfer",
     AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.CreditTransfer,
   },
-  balance: {
-    URL: "transactions/get-balance",
-    AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.GetBalance,
+  dashboard: {
+    URL: "transactions/populate-dashboard",
+    AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.GetDashboardValues,
   },
 };

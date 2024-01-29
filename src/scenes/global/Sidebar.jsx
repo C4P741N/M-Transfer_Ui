@@ -43,21 +43,9 @@ const Sidebar = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = auth?.accessToken;
+      const username = auth?.userId;
 
-      const userObj = parseJwt(token);
-
-      console.log('Token values are '+ JSON.stringify(userObj))
-
-      const userId = userObj?.userName;
-
-      setUserName(userId);
-
-    //   const { URL, AUTH_TYPE } = transactionTypeMap["balance"] || {};
-
-    //   if (URL && AUTH_TYPE) {
-    //     await dataParser(URL, AUTH_TYPE, userId);
-    //   }
+      setUserName(username);
     };
 
     fetchData();

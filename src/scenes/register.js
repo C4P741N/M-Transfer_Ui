@@ -1,12 +1,12 @@
 import React, { useState } from "react";
 import { Box, Button, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
+import { tokens } from "../theme";
 import { useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
-import TextBox from "../../components/TextBox";
-import axios from "../../api/axios";
-import { EnumsFactory } from "../../data/utilsAtLarge";
+import useAuth from "../hooks/useAuth";
+import TextBox from "../components/TextBox";
+import axios from "../api/axios";
+import { EnumsFactory } from "../data/utilsAtLarge";
 
 const REGISTER_URL = "/auth/register";
 

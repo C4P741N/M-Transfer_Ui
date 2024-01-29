@@ -1,12 +1,13 @@
 import React, { useState } from "react";
 import { Box, Button, TextField, Typography, useTheme } from "@mui/material";
-import { tokens } from "../../theme";
-import axios from "../../api/axios";
-import { EnumsFactory } from "../../data/utilsAtLarge";
+import { tokens } from "../theme";
+import axios from "../api/axios";
+import { EnumsFactory } from "../data/utilsAtLarge";
 import { useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import useAuth from "../../hooks/useAuth";
+import useAuth from "../hooks/useAuth";
 import { useEffect } from "react";
+import { parseJwt } from "../components/DecryptToken";
 
 const LOGIN_URL = "auth/authenticate";
 
@@ -19,7 +20,7 @@ const LoginScreen = () => {
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [username, setUsername] = useState("");
+  const [email, setemail] = useState("");
   const [password, setPassword] = useState("");
   const [errMsg, setErrMsg] = useState("");
 
@@ -38,7 +39,7 @@ const LoginScreen = () => {
       const response = await axios.post(
         LOGIN_URL,
         JSON.stringify({
-          email: username,
+          email: email,
           pwd: password,
           authType: EnumsFactory.EnumsAtLarge.AuthTypes.Authentication,
         }),
@@ -50,19 +51,25 @@ const LoginScreen = () => {
       const accessToken = response?.data?.token;
       const roles = response?.data?.roles;
       const expiration = response?.data?.expiration;
-      setAuth({ roles, accessToken, expiration });
-      setUsername("");
+
+      const userObj = parseJwt(accessToken);
+
+      console.log('Token values are '+ JSON.stringify(userObj))
+
+      const userId = userObj?.userName;
+      setAuth({ roles, accessToken, expiration, userId });
+      setemail("");
       setPassword("");
       navigate("/", { replace: true });
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");
       } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
+        setErrMsg("Missing email or Password");
       } else if (err.response?.status === 401) {
         setErrMsg("Unauthorized");
       } else {
-        setErrMsg("Invalid Username or Password");
+        setErrMsg("Invalid email or Password");
       }
       errRef.current.focus();
     }
@@ -70,10 +77,10 @@ const LoginScreen = () => {
 
   useEffect(() => {
     setErrMsg("");
-  }, [username, password]);
+  }, [email, password]);
 
   const isFormValid = () => {
-    return username.trim() !== "" && password.trim() !== "";
+    return email.trim() !== "" && password.trim() !== "";
   };
 
   return (
@@ -118,8 +125,8 @@ const LoginScreen = () => {
           variant="outlined"
           fullWidth
           margin="normal"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          value={email}
+          onChange={(e) => setemail(e.target.value)}
           sx={{
             "& input": {
               fontSize: "20px",
