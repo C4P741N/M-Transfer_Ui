@@ -51,12 +51,16 @@ const Dashboard = () => {
         }
       );
 
-      console.log("Dashboard response is " + JSON.stringify(response.data));
+      // console.log("Dashboard response is " + JSON.stringify(response.data));
 
       const bal = response?.data?.balance;
       const sent = response?.data?.amountSent;
       const received = response?.data?.amountReceived;
       const statmnts = response?.data?.statements;
+
+      // console.log("Dashboard response is " + JSON.stringify(statmnts));
+
+      console.log(`received ${received} sent ${sent}`)
 
       setBalance(bal);
       setAmountSent(sent);

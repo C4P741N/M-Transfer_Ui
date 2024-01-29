@@ -13,6 +13,7 @@ import RegistrationForm from "./scenes/register";
 import RequireAuth from "./components/RequireAuth";
 import useAuth from "./hooks/useAuth";
 import TokenExpiredPage from "./scenes/tokenExpiry";
+import Logout from "./scenes/logout";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -23,7 +24,7 @@ function App() {
   const { auth } = useAuth();
 
   const toggleSidebar = () => {
-    // setIsSidebarVisible((prev) => !prev);
+    setIsSidebarVisible((prev) => !prev);
   };
 
   const ROLES = {
@@ -35,12 +36,6 @@ function App() {
   useEffect(() => {
     console.log(auth);
     // Check if there is a token in the auth context
-    // if (auth && auth?.token) {
-    //   setIsAuthenticated(true);
-    // } else {
-    //   setIsAuthenticated(false);
-    // }
-
     if (auth?.accessToken) {
       setIsAuthenticated(true);
     } else {
@@ -66,6 +61,7 @@ function App() {
                 <Route path="/transact" element={<Transact />} />
                 <Route path="/statements" element={<Statements />} />
                 <Route path="/invoices" element={<Invoices />} />
+                <Route path="/logout" element={<Logout />} />
               </Route>
             </Routes>
           </main>

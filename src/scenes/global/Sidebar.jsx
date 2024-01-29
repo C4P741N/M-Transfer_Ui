@@ -12,6 +12,7 @@ import AttachMoneyOutlined from "@mui/icons-material/Balance";
 import { useEffect } from "react";
 import { parseJwt } from "../../components/DecryptToken";
 import useAuth from "../../hooks/useAuth";
+import { LogoutOutlined } from "@mui/icons-material";
 
 const Item = ({ title, to, icon, selected, setSelected }) => {
   const theme = useTheme();
@@ -137,17 +138,24 @@ const Sidebar = () => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title="Statements"
-              to="/statements"
-              icon={<ReceiptOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
             <Item
               title="Contacts"
               to="/invoices"
               icon={<ContactsOutlinedIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+            <Typography
+              variant="h6"
+              color={colors.grey[300]}
+              sx={{ m: "505px 0 5px 20px" }}
+            >
+              {/* Data */}
+            </Typography>
+            <Item
+              title="LogOut"
+              to="/logout"
+              icon={<LogoutOutlined />}
               selected={selected}
               setSelected={setSelected}
             />

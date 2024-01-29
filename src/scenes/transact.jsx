@@ -14,6 +14,7 @@ import { useTheme } from "@emotion/react";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
 import { Link } from "react-router-dom";
 import TextBox from "../components/TextBox";
+import useAuth from "../hooks/useAuth";
 
 const Transact = () => {
   const userRef = useRef();
@@ -29,10 +30,12 @@ const Transact = () => {
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
   const [amount, setAmount] = useState("");
-  const [user, setUser] = useState("User");
+  // const [user, setUser] = useState("User");
   const [transferUser, setTransferUser] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [succMsg, setSuccMsg] = useState("");
+
+  const { auth } = useAuth();
 
   const [balance, setBalance] = useState("0.00");
 
@@ -62,9 +65,13 @@ const Transact = () => {
       invalid = Boolean(transferUser.trim())
     }
 
+    if(transaction !== "select"){
+      setSuccMsg("");
+    }
+
     setTransferSelected(transaction === "transfer");
     setInvalidValues(invalid);
-    setSuccMsg("");
+    // setSuccMsg("");
     setErrMsg("");
   }, [userFocus, transaction, amount, transferUser, transferSelected]);
 
@@ -81,6 +88,8 @@ const Transact = () => {
       // const response = await privateDataParser(URL, AUTH_TYPE, user, amount);
 
       console.log(`${URL} ${AUTH_TYPE} `);
+
+      const user = auth?.userId;
 
       try {
         const response = await axiosPrivate.post(
@@ -101,13 +110,17 @@ const Transact = () => {
 
         console.log("Dashboard response is " + JSON.stringify(response.data));
 
-        console.log(`${response.hasError} ${response.data}`);
+        // console.log(`${response.hasError} ${response.data}`);
 
         // return {data: response, hasError: false};
       } catch (err) {
-        console.log("Dashboard response is " + JSON.stringify(err));
+        console.log("Dashboard error response is " + JSON.stringify(err.response.status));
         // return {data: err?.data, hasError: true};
+        if(err?.response?.status === 400){
+          setErrMsg("Insufficient funds");
+        }else{
         setErrMsg(err?.message);
+        }
       }
     }
   };
@@ -128,7 +141,7 @@ const Transact = () => {
       />
       {errMsg && (
         <Typography
-          variant="h4"
+          variant="h2"
           fontWeight="bold"
           color={colors.redAccent[500]}
           mb={4}
@@ -138,9 +151,9 @@ const Transact = () => {
       )}
       {succMsg && (
         <Typography
-          variant="h4"
+          variant="h2"
           fontWeight="bold"
-          color={colors.greenAccent[300]}
+          color={colors.greenAccent[400]}
           mb={4}
         >
           {succMsg}
