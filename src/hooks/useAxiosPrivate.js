@@ -19,7 +19,7 @@ const useAxiosPrivate = () => {
                     config.headers['Authorization'] = `Bearer ${auth?.accessToken}`;
                     console.log("In useAxiosPrivate, token is "+ JSON.stringify(auth))
                 }
-                console.log("In useAxiosPrivate, not in if statement is "+ JSON.stringify(config));
+                // console.log("In useAxiosPrivate, not in if statement is "+ JSON.stringify(config));
                 return config;
             }, (error) => Promise.reject(error)
         );
@@ -31,7 +31,7 @@ const useAxiosPrivate = () => {
                     navigate("/tokenExpiry");
                 }
 
-                console.log("In useAxiosPrivate, error is "+ error)
+                // console.log("In useAxiosPrivate, error is "+ error)
                 
                 return Promise.reject(error);
             }

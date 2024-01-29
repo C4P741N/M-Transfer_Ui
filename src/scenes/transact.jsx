@@ -1,20 +1,34 @@
-import { Box, Button, TextField } from "@mui/material";
+import { Box, Button, TextField, Typography } from "@mui/material";
 import { Formik } from "formik";
 import * as yup from "yup";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import Header from "../components/Header";
 import { useEffect, useRef, useState } from "react";
 import Dropdown from "../components/Dropdown";
-import { transactionTypes } from "../data/utilsAtLarge";
+import { transactionTypeMap, transactionTypes } from "../data/utilsAtLarge";
+import { axiosPrivate } from "../api/axios";
+import dataParser from "../api/dataParser";
+import privateDataParser from "../api/dataParser";
+import { tokens } from "../theme";
+import { useTheme } from "@emotion/react";
+import useAxiosPrivate from "../hooks/useAxiosPrivate";
+import { Link } from "react-router-dom";
+import TextBox from "../components/TextBox";
 
 const Transact = () => {
   const userRef = useRef();
   const errRef = useRef();
   const DIGITS_REGEX = /^[0-9]*(\.[0-9]{0,2})?$/;
 
+  const axiosPrivate = useAxiosPrivate();
+  const controller = new AbortController();
+
+  const theme = useTheme();
+  const colors = tokens(theme.palette.mode);
+
   const isNonMobile = useMediaQuery("(min-width:600px)");
 
-  const [amount, setAmount] = useState("0.00");
+  const [amount, setAmount] = useState("");
   const [user, setUser] = useState("User");
   const [transferUser, setTransferUser] = useState("");
   const [errMsg, setErrMsg] = useState("");
@@ -23,6 +37,9 @@ const Transact = () => {
   const [balance, setBalance] = useState("0.00");
 
   const [userFocus, setUserFocus] = useState(false);
+  const [invalidValues, setInvalidValues] = useState(false);
+
+  const [errors, setErrors] = useState({});
 
   const [init, setInit] = useState(false);
   const [transferSelected, setTransferSelected] = useState(false);
@@ -30,6 +47,8 @@ const Transact = () => {
   const [transaction, setTransaction] = useState("select");
 
   const handleAmountInput = (value) => {
+    console.log(value);
+
     if (DIGITS_REGEX.test(value)) {
       setAmount(value);
     }
@@ -37,118 +56,153 @@ const Transact = () => {
   };
 
   useEffect(() => {
-    setTransferSelected(transaction === "transfer");
-  }, [transaction]);
+    let invalid = transaction !== "select" && Boolean(amount.trim())
 
-  useEffect(() => {
+    if(transferSelected){
+      invalid = Boolean(transferUser.trim())
+    }
+
+    setTransferSelected(transaction === "transfer");
+    setInvalidValues(invalid);
     setSuccMsg("");
     setErrMsg("");
-  }, [userFocus]);
+  }, [userFocus, transaction, amount, transferUser, transferSelected]);
 
-  const handleFormSubmit = async (e) => {};
+  const handleFormSubmit = async () => {
+    // e.preventDefault();
+
+    console.log("In handleSubmit");
+
+    const { URL, AUTH_TYPE } = transactionTypeMap[transaction] || {};
+
+     if (URL && AUTH_TYPE) {
+      // await dataParser(URL, AUTH_TYPE, user);
+
+      // const response = await privateDataParser(URL, AUTH_TYPE, user, amount);
+
+      console.log(`${URL} ${AUTH_TYPE} `);
+
+      try {
+        const response = await axiosPrivate.post(
+          URL,
+          JSON.stringify({
+            userId: user,
+            amount: parseFloat(amount),
+            trasactionType: AUTH_TYPE,
+          }),
+          {
+            signal: controller.signal,
+          }
+        );
+        setTransaction("select");
+        setAmount("");
+        setTransferUser("");
+        setSuccMsg("Success");
+
+        console.log("Dashboard response is " + JSON.stringify(response.data));
+
+        console.log(`${response.hasError} ${response.data}`);
+
+        // return {data: response, hasError: false};
+      } catch (err) {
+        console.log("Dashboard response is " + JSON.stringify(err));
+        // return {data: err?.data, hasError: true};
+        setErrMsg(err?.message);
+      }
+    }
+  };
 
   return (
-    <Box m="50px" p="0 100px">
-      <Header title="Transact" subtitle="Deposit, Withdraw and Transfer funds" />
-
-      <Formik
-        onSubmit={handleFormSubmit}
-        initialValues={initialValues}
-        validationSchema={checkoutSchema}
+    <Box
+      display="flex"
+      flexDirection="column"
+      // alignItems="center"
+      // justifyContent="center"
+      m="20px"
+      minHeight="50vh"
+      backgroundColor={colors.primary[500]}
+    >
+      <Header
+        title="Transact"
+        subtitle="Deposit, Withdraw and Transfer funds"
+      />
+      {errMsg && (
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          color={colors.redAccent[500]}
+          mb={4}
+        >
+          {errMsg}
+        </Typography>
+      )}
+      {succMsg && (
+        <Typography
+          variant="h4"
+          fontWeight="bold"
+          color={colors.greenAccent[300]}
+          mb={4}
+        >
+          {succMsg}
+        </Typography>
+      )}
+      <Box
+        width={500}
+        p={3}
+        borderRadius={4}
+        boxShadow={3}
+        bgcolor={colors.primary[400]}
       >
-        {() => (
-          <form>
-            <Box
-              display="grid"
-              gap="30px"
-              gridTemplateColumns="repeat(2, minmax(0, 1fr))"
-              sx={{
-                "& > div": { gridColumn: isNonMobile ? undefined : "span 4" },
-              }}
-            >
-              {/*Grid First row*/}
-              <TextField
-                label="Amount"
-                name="amount"
-                type="text"
-                id="amount"
-                variant="filled"
-                ref={userRef}
-                autoComplete="off"
-                onChange={(e) => handleAmountInput(e.target.value)} //{(e) => setAmount(e.target.value)}
-                value={amount}
-                required
-                // placeholder="Enter amount"
-                onFocus={() => setUserFocus(true)}
-                onBlur={() => setUserFocus(false)}
-                InputLabelProps={{style: {fontSize: 20}}}
-                inputProps={{style: {fontSize: 40}}}
-                // sx={{width: 'calc(200% - 5px)'}}
-                // onChange="this.style.width = ((this.value.length + 1) * 8) + 'px';"
-              />
-              {transferSelected ? (
-                <>
-                  <TextField
-                    label="Recepient"
-                    name="recepient"
-                    type="text"
-                    id="username"
-                    variant="filled"
-                    ref={userRef}
-                    autoComplete="off"
-                    onChange={(e) => setTransferUser(e.target.value)}
-                    value={transferUser}
-                    required
-                    onFocus={() => setUserFocus(true)}
-                    onBlur={() => setUserFocus(false)}
-                    inputProps={{style: {fontSize: 40}}}
-                  />
-                </>
-              ) : (
-                <></>
-              )}
-
-              {/*Grid seconf row*/}
-              <Box display="flex" justifyContent="start" mt="0px"  sx={{ gridColumn: "span 4" }}>
-              <Dropdown
-                label="Transaction type"
-                options={transactionTypes}
-                value={transaction}
-                onChange={(e) => setTransaction(e.target.value)}
-              />
-              </Box>
-
-              {/*Grid third row*/}
-              <Box display="flex" justifyContent="start" mt="0px" sx={{ gridColumn: "span 4" }}>
-                <Button type="submit" color="secondary" variant="contained" sx={{ fontSize: 20 }}>
-                  Process
-                </Button>
-              </Box>
-            </Box>
-          </form>
+        <TextBox
+          label="Amount"
+          value={amount}
+          onChange={(value) => handleAmountInput(value)}
+          onFocus={() => setUserFocus(true)}
+          onBlur={() => setUserFocus(false)}
+        />
+        {transferSelected && (
+          <TextBox
+            label="Recepient"
+            value={transferUser}
+            onChange={(value) => setTransferUser(value)}
+            onFocus={() => setUserFocus(true)}
+            onBlur={() => setUserFocus(false)}
+            // error={errors.transferUser}
+          />
         )}
-      </Formik>
+
+        <Box
+          display="flex"
+          justifyContent="start"
+          m="20px"
+          sx={{ gridColumn: "span 4" }}
+        >
+          <Dropdown
+            label="Transaction type"
+            options={transactionTypes}
+            value={transaction}
+            onChange={(e) => setTransaction(e.target.value)}
+          />
+        </Box>
+
+        <Button
+          variant="contained"
+          color="secondary"
+          // fullWidth
+          size="large"
+          onClick={handleFormSubmit}
+          mt={2}
+          sx={{
+            fontSize: "18px",
+            color: "white",
+          }}
+          disabled={!invalidValues}
+        >
+          Process
+        </Button>
+      </Box>
     </Box>
   );
-};
-
-const phoneRegExp =
-  /^((\+[1-9]{1,4}[ -]?)|(\([0-9]{2,3}\)[ -]?)|([0-9]{2,4})[ -]?)*?[0-9]{3,4}[ -]?[0-9]{3,4}$/;
-
-const checkoutSchema = yup.object().shape({
-  firstName: yup.string().required("required"),
-  lastName: yup.string().required("required"),
-  email: yup.string().email("invalid email").required("required"),
-  contact: yup
-    .string()
-    .matches(phoneRegExp, "Phone number is not valid")
-    .required("required"),
-  amount: yup.string().required("required"),
-  recepient: yup.string().required("required"),
-});
-const initialValues = {
-  amount: "",
-  recepient: "",
 };
 
 export default Transact;
