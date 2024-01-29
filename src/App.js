@@ -5,7 +5,7 @@ import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Transact from "./scenes/transact";
 import Invoices from "./scenes/invoices";
-import Contacts from "./scenes/contacts";
+import Statements from "./scenes/statements";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
 import LoginScreen from "./scenes/login";
@@ -64,7 +64,7 @@ function App() {
               <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/transact" element={<Transact />} />
-                <Route path="/contacts" element={<Contacts />} />
+                <Route path="/contacts" element={<Statements />} />
                 <Route path="/invoices" element={<Invoices />} />
               </Route>
             </Routes>
