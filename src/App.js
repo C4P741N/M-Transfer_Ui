@@ -64,7 +64,7 @@ function App() {
               <Route element={<RequireAuth allowedRoles={[ROLES.User]} />}>
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/transact" element={<Transact />} />
-                <Route path="/contacts" element={<Statements />} />
+                <Route path="/statements" element={<Statements />} />
                 <Route path="/invoices" element={<Invoices />} />
               </Route>
             </Routes>

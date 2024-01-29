@@ -6,16 +6,17 @@ import useAuth from "../hooks/useAuth";
 import { useEffect, useState } from "react";
 import { transactionTypeMap } from "../data/utilsAtLarge";
 import useAxiosPrivate from "../hooks/useAxiosPrivate";
-
+import Statements from "./statements";
 
 const Dashboard = () => {
   const { auth } = useAuth();
   const theme = useTheme();
   const colors = tokens(theme.palette.mode);
 
-  const [balance, setBalance] = useState("0.00")
-  const [amountSent, setAmountSent] = useState("0.00")
-  const [amountReceived, setAmountReceived] = useState("0.00")
+  const [balance, setBalance] = useState("0.00");
+  const [amountSent, setAmountSent] = useState("0.00");
+  const [amountReceived, setAmountReceived] = useState("0.00");
+  const [statements, setStatements] = useState({});
 
   const axiosPrivate = useAxiosPrivate();
 
@@ -55,10 +56,12 @@ const Dashboard = () => {
       const bal = response?.data?.balance;
       const sent = response?.data?.amountSent;
       const received = response?.data?.amountReceived;
+      const statmnts = response?.data?.statements;
 
       setBalance(bal);
       setAmountSent(sent);
       setAmountReceived(received);
+      setStatements(statmnts);
       // setTransaction("select");
       // setAmount("");
       // setTransferUser("");
@@ -67,7 +70,7 @@ const Dashboard = () => {
       console.error("Dashboard error is " + JSON.parse(err?.response));
 
       // setErrMsg(err?.data);
-  
+
       // errRef.current.focus();
     }
   };
@@ -93,7 +96,12 @@ const Dashboard = () => {
           mt="25px"
           p="0 40px"
         >
-          <Typography variant="h5" fontWeight="600" mt="25px" color={colors.grey[100]}>
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            mt="25px"
+            color={colors.grey[100]}
+          >
             Balance
           </Typography>
           <Typography
@@ -110,7 +118,12 @@ const Dashboard = () => {
           mt="25px"
           p="0 40px"
         >
-          <Typography variant="h5" fontWeight="600" mt="25px" color={colors.grey[100]}>
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            mt="25px"
+            color={colors.grey[100]}
+          >
             Sent
           </Typography>
           <Typography
@@ -127,7 +140,12 @@ const Dashboard = () => {
           mt="25px"
           p="0 40px"
         >
-          <Typography variant="h5" fontWeight="600" mt="25px" color={colors.grey[100]}>
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            mt="25px"
+            color={colors.grey[100]}
+          >
             Received
           </Typography>
           <Typography
@@ -138,67 +156,8 @@ const Dashboard = () => {
             Ksh {amountReceived}
           </Typography>
         </Box>
-
-        {/* ROW 2 */}
-        
-        <Box
-          gridColumn="span 7"
-          gridRow="span 4"
-          backgroundColor={colors.primary[400]}
-          overflow="auto"
-        >
-          <Box
-            display="flex"
-            justifyContent="space-between"
-            alignItems="center"
-            borderBottom={`4px solid ${colors.primary[500]}`}
-            colors={colors.grey[100]}
-            p="15px"
-          >
-            <Typography color={colors.grey[100]} variant="h5" fontWeight="600">
-              Transaction Statement
-            </Typography>
-          </Box>
-          {mockTransactions.map((transaction, i) => (
-            <Box
-              key={`${transaction.txId}-${i}`}
-              display="flex"
-              justifyContent="space-between"
-              alignItems="center"
-              borderBottom={`4px solid ${colors.primary[500]}`}
-              p="15px"
-            >
-              <Box>
-                <Typography
-                  color={colors.greenAccent[500]}
-                  variant="h5"
-                  fontWeight="600"
-                >
-                  {transaction.txId}
-                </Typography>
-                <Typography color={colors.grey[100]}>
-                  {transaction.user}
-                </Typography>
-              </Box>
-              <Box color={colors.grey[100]}>{transaction.date}</Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                ${transaction.cost}
-              </Box>
-              <Box
-                backgroundColor={colors.greenAccent[500]}
-                p="5px 10px"
-                borderRadius="4px"
-              >
-                ${transaction.cost}
-              </Box>
-            </Box>
-          ))}
-        </Box>
       </Box>
+      <Statements dataArray={statements} />
     </Box>
   );
 };
