@@ -44,6 +44,7 @@ const Dashboard = () => {
         JSON.stringify({
           userId: userId,
           amount: 0,
+          recepient: "",
           trasactionType: AUTH_TYPE,
         }),
         {

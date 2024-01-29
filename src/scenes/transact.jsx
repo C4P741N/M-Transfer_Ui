@@ -96,6 +96,7 @@ const Transact = () => {
           URL,
           JSON.stringify({
             userId: user,
+            recepient: transferUser,
             amount: parseFloat(amount),
             trasactionType: AUTH_TYPE,
           }),

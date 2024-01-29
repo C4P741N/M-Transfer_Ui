@@ -36,13 +36,13 @@ const Statements = ({ dataArray }) => {
       field: "transactionId", 
       headerName: "Transaction Id", 
       flex: 0.2, 
-      cellClassName: "name-column--cell", 
     },
     {
       field: "amount",
       headerName: "Amount",
       headerAlign: "left",
       align: "left",
+      cellClassName: "name-column--cell", 
     },
     {
       field: "recepient",
