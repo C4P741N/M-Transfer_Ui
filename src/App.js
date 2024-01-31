@@ -4,7 +4,7 @@ import Topbar from "./scenes/global/Topbar";
 import Sidebar from "./scenes/global/Sidebar";
 import Dashboard from "./scenes/dashboard";
 import Transact from "./scenes/transact";
-import Invoices from "./scenes/invoices";
+import Invoices from "./scenes/contacts";
 import Statements from "./scenes/statements";
 import { CssBaseline, ThemeProvider } from "@mui/material";
 import { ColorModeContext, useMode } from "./theme";
@@ -14,6 +14,7 @@ import RequireAuth from "./components/RequireAuth";
 import useAuth from "./hooks/useAuth";
 import TokenExpiredPage from "./scenes/tokenExpiry";
 import Logout from "./scenes/logout";
+import Contacts from "./scenes/contacts";
 
 function App() {
   const [theme, colorMode] = useMode();
@@ -60,7 +61,7 @@ function App() {
                 <Route path="/" element={<Dashboard />} />
                 <Route path="/transact" element={<Transact />} />
                 <Route path="/statements" element={<Statements />} />
-                <Route path="/invoices" element={<Invoices />} />
+                <Route path="/contacts" element={<Contacts />} />
                 <Route path="/logout" element={<Logout />} />
               </Route>
             </Routes>

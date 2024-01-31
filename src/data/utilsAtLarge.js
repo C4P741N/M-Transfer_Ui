@@ -12,6 +12,7 @@ export const EnumsFactory = {
       Deposit: 2,
       GetDashboardValues: 3,
       CreditTransfer: 4,
+      GetContacts: 5,
     },
   },
 };
@@ -40,5 +41,9 @@ export const transactionTypeMap = {
   dashboard: {
     URL: "transactions/populate-dashboard",
     AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.GetDashboardValues,
+  },
+  contacts: {
+    URL: "transactions/populate-contacts",
+    AUTH_TYPE: EnumsFactory.EnumsAtLarge.TransactionTypes.GetContacts,
   },
 };

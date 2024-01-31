@@ -59,13 +59,13 @@ const Transact = () => {
   };
 
   useEffect(() => {
-    let invalid = transaction !== "select" && Boolean(amount.trim())
+    let invalid = transaction !== "select" && Boolean(amount.trim());
 
-    if(transferSelected){
-      invalid = Boolean(transferUser.trim())
+    if (transferSelected) {
+      invalid = Boolean(transferUser.trim());
     }
 
-    if(transaction !== "select"){
+    if (transaction !== "select") {
       setSuccMsg("");
     }
 
@@ -82,7 +82,7 @@ const Transact = () => {
 
     const { URL, AUTH_TYPE } = transactionTypeMap[transaction] || {};
 
-     if (URL && AUTH_TYPE) {
+    if (URL && AUTH_TYPE) {
       // await dataParser(URL, AUTH_TYPE, user);
 
       // const response = await privateDataParser(URL, AUTH_TYPE, user, amount);
@@ -107,7 +107,17 @@ const Transact = () => {
         setTransaction("select");
         setAmount("");
         setTransferUser("");
-        setSuccMsg("Success");
+
+        //JavaScript object to map transaction types
+        const successMessages = {
+          transfer: `Transfer successful! Ksh${amount} has been sent to ${transferUser}.`,
+          deposit: `Deposit successful! Ksh${amount} has been added to your account.`,
+          withdraw: `Withdrawal successful! Ksh${amount} has been deducted from your account.`,
+        };
+
+        const successMessage = successMessages[transaction] || "";
+
+        setSuccMsg(successMessage);
 
         console.log("Dashboard response is " + JSON.stringify(response.data));
 
@@ -115,12 +125,14 @@ const Transact = () => {
 
         // return {data: response, hasError: false};
       } catch (err) {
-        console.log("Dashboard error response is " + JSON.stringify(err.response.status));
+        console.log(
+          "Dashboard error response is " + JSON.stringify(err.response.status)
+        );
         // return {data: err?.data, hasError: true};
-        if(err?.response?.status === 400){
+        if (err?.response?.status === 400) {
           setErrMsg("Insufficient funds");
-        }else{
-        setErrMsg(err?.message);
+        } else {
+          setErrMsg(err?.message);
         }
       }
     }
@@ -142,7 +154,7 @@ const Transact = () => {
       />
       {errMsg && (
         <Typography
-          variant="h2"
+          variant="h4"
           fontWeight="bold"
           color={colors.redAccent[500]}
           mb={4}
@@ -152,7 +164,7 @@ const Transact = () => {
       )}
       {succMsg && (
         <Typography
-          variant="h2"
+          variant="h4"
           fontWeight="bold"
           color={colors.greenAccent[400]}
           mb={4}

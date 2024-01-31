@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { tokens } from "../theme";
 import { mockDataContacts, mockUser } from "../data/mockData";
@@ -43,6 +43,18 @@ const Statements = ({ dataArray }) => {
       headerAlign: "left",
       align: "left",
       cellClassName: "name-column--cell", 
+      renderCell: (params) => (
+        <Typography 
+          // color={colors.greenAccent[500]}
+          color={
+            params.row.amount > 0
+            ? colors.greenAccent[500]
+            : colors.redAccent[500]
+            } 
+          className="custom-cell">
+          Ksh {params.row.amount}
+        </Typography>
+      ),
     },
     {
       field: "recepient",
@@ -66,7 +78,7 @@ const Statements = ({ dataArray }) => {
       <Header title="Statements" subtitle="List of Transaction Statements" />
       {!hasValues ? (
         <Box m="40px 0 0 0">
-          <h2>No values found. Please check your data or try again later.</h2>
+          <h2>Transactions you perform will be displayed here.</h2>
         </Box>
       ) : (
         <Box
@@ -103,6 +115,9 @@ const Statements = ({ dataArray }) => {
             // },
             "& .MuiDataGrid-toolbarContainer .MuiButton-text": {
               color: `${colors.grey[100]} !important`,
+              fontSize: "16px",
+            },
+            "& .custom-cell": {
               fontSize: "16px",
             },
           }}
